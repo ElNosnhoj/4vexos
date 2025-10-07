@@ -1,0 +1,7 @@
+*.pyc
+logs/*
+.ignore/
+*__pycache__
+*tempCodeRunnerFile*
+.env
+.vscode/

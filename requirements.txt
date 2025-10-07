@@ -1,0 +1,9 @@
+paramiko
+flask
+flask-cors
+requests
+python-dotenv
+pyserial
+escpos
+psutil
+pyusb

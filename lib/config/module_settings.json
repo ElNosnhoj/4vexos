@@ -1,0 +1,22 @@
+{
+    "BNA": {
+        "version": 2207,
+        "mod": 2
+    },
+    "EMV_CONTACT": {
+        "version": 26,
+        "mod": -1
+    },
+    "KIOSK_NFC": {
+        "version": 2227,
+        "mod": 0
+    },
+    "MK7_XE910": {
+        "version": 2209,
+        "mod": 3
+    },
+    "MSPM_PWR": {
+        "version": 2219,
+        "mod": 2
+    }
+}

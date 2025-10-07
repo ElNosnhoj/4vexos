@@ -1,0 +1,16 @@
+{
+    "name": "for_vexos",
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "for_vexos",
+    "workspaceFolder": "/app",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "formulahendry.code-runner",
+                "amodio.toggle-excluded-files",
+                "ms-python.python"
+            ]
+        }
+    },
+    "overrideCommand": true
+}

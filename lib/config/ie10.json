@@ -1,0 +1,57 @@
+{
+    "KBD_CONTROLLER": {
+        "fw": 2217,
+        "mod_func": 4,
+        "full_id": 93001636
+    },
+    "COIN_SHUTTER": {
+        "fw": 2215,
+        "mod_func": 1,
+        "full_id": 61000071
+    },
+    "MK7_RFID": {
+        "fw": 2101,
+        "mod_func": 0,
+        "full_id": 0
+    },
+    "KIOSK_III": {
+        "fw": 146,
+        "mod_func": 0,
+        "full_id": 39078272
+    },
+    "BNA": {
+        "fw": 2207,
+        "mod_func": 2,
+        "full_id": 97000490
+    },
+    "PRINTER": {
+        "fw": 2205,
+        "mod_func": 1,
+        "full_id": 50002729
+    },
+    "MK7_VALIDATOR": {
+        "fw": 2217,
+        "mod_func": 2,
+        "full_id": 71000694
+    },
+    "KEY_PAD_2": {
+        "fw": 1,
+        "mod_func": 0,
+        "full_id": 89002160
+    },
+    "MK7_XE910": {
+        "fw": 2209,
+        "mod_func": 3,
+        "full_id": 76011859
+    },
+    "KIOSK_NFC": {
+        "fw": 2227,
+        "mod_func": 0,
+        "full_id": 75006081
+    },
+    "MSPM_PWR": {
+        "fw": 2219,
+        "mod_func": 2,
+        "full_id": 84000022
+    }
+}
