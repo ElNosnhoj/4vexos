@@ -13,5 +13,14 @@
             "mod -1 is now ignored"
         ],
         "date": "2025-10-08"
+    },
+    {
+        "version": "1.0.2",
+        "changes": [
+            "Mod hint frontend",
+            "Allow other domains to access site"
+        ],
+        "date": "2025-10-08"
     }
+    
 ]
