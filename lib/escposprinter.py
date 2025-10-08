@@ -67,7 +67,8 @@ class BasePrinter(Escpos):
             / sz
         )
 
-        text = text.strip()
+        # text = text.strip()
+        text=text.rstrip()
         if len(text) - 1 > max_width:
             print("WARNING: txt to long")
         text = text[:max_width]

@@ -13,6 +13,24 @@ import json
 printer_path = "/dev/usb/lp0"
 printer = FilePrinter(printer_path)
 
+def goodbadextramissing(modules:dict):
+    # good = module matches config
+    # bad = module mismatches config
+    # missing = config has something meter does not
+    # extra = meter has something config does not
+    good, bad, extra, missing  = {}, {}, {}, {}
+    
+    for k, v in modules.items():
+        to_check = {"version": v["fw"], "mod": v["mod_func"]}
+        stored = ModuleSettings[k]
+        if not stored: extra[k] = v
+        elif stored==to_check: good[k] = v
+        else: bad[k] =v
+    for k in ModuleSettings.get_keys():
+        if k not in modules:
+            missing[k] = ModuleSettings[k]
+
+    return good, bad, extra, missing
 
 class zebra:
     def simple(hostname,modules):
@@ -41,134 +59,36 @@ class zebra:
             printer.line(table_header)
             for row in table_rows: printer.line(row)
             printer.cut()
-        
 
-    def organized(hostname,modules):
-        equals = "=" * 40
-        top=[equals]
-        top.append(f"meter: {hostname}")
-        bot=[equals]
-
-        table_header = "module".ljust(14)+" | "
-        table_header+= "ver".rjust(4)+" | "
-        table_header+= "mod".rjust(4)+" | "
-        table_header+= "id".rjust(9)
-        top.append(table_header)
-
-        # good = module matches config
-        # bad = module mismatches config
-        # missing = config has something meter does not
-        # extra = meter has something config does not
-        good, bad, extra, missing  = {}, {}, {}, {}
-        
-        for k, v in modules.items():
-            to_check = {"version": v["fw"], "mod": v["mod_func"]}
-            stored = ModuleSettings[k]
-            if not stored: extra[k] = v
-            elif stored==to_check: good[k] = v
-            elif (stored.get("mod")==-1 and stored.get("version")==to_check.get("version")): good[k] = v
-            else: bad[k] =v
-        for k in ModuleSettings.get_keys():
-            if k not in modules:
-                missing[k] = ModuleSettings[k]
-
-        rows = []
-        def __rows(d:dict):
-            for k,v in d.items():
-                line = k.ljust(14)+" | "
-                line+= str(v.get('fw')).rjust(4) + " | "
-                line+= str(v.get('mod_func')).rjust(4) + " | "
-                line+= str(v.get('full_id')).rjust(9)
-                rows.append(line)
-
-        
-        if good:
-            rows.append('========================================')
-            rows.append('=========         pass          ========')
-            rows.append('========================================')
-            __rows(good)
-        if bad:
-            rows.append('========================================')
-            rows.append('=========         fail          ========')
-            rows.append('========================================')
-            __rows(bad)
-        if missing:
-            rows.append('========================================')
-            rows.append('=======         missing          =======')
-            rows.append('========================================')
-            __rows(missing)
-        if extra:
-            rows.append('========================================')
-            rows.append('========         extra          ========')
-            rows.append('========================================')
-            __rows(extra)
-
-        if secrets.dev_mode:
-            # print(json.dumps(top, indent=4))
-            for l in top: print(l)
-            for l in rows: print(l)
-            for l in bot: print(l)
-            
-
-        else:
-            for l in top: printer.line(l)
-            for l in rows: printer.line(l)
-            for l in bot: printer.line(l)
-            printer.cut()
-    
-    def organizedv2(hostname,modules):
-        equals = "=" * 42
-        top=[equals]
-        top.append(f"meter: {hostname}")
-        bot = [equals]
-
-        table_header = ".|"
-        table_header+= "module".ljust(14)+" | "
-        table_header+= "ver".rjust(4)+" | "
-        table_header+= "mod".rjust(4)+" | "
-        table_header+= "id".rjust(9)
-        top.append(table_header)
-
-        # good = module matches config
-        # bad = module mismatches config
-        # missing = config has something meter does not
-        # extra = meter has something config does not
-        good, bad, extra, missing  = {}, {}, {}, {}
-        
-        for k, v in modules.items():
-            to_check = {"version": v["fw"], "mod": v["mod_func"]}
-            stored = ModuleSettings[k]
-            if not stored: extra[k] = v
-            elif stored==to_check: good[k] = v
-            elif (stored.get("mod")==-1 and stored.get("version")==to_check.get("version")): good[k] = v
-            else: bad[k] =v
-        for k in ModuleSettings.get_keys():
-            if k not in modules:
-                missing[k] = ModuleSettings[k]
+    def organizedv1(hostname,modules, showId=True):
+        good, bad, extra, missing  = goodbadextramissing(modules)
 
         rows = []
         def __rows(d:dict, pre):
             for k,v in d.items():
                 line=f"{pre}|"
                 
-                line+= k.ljust(14)+" | "
+                line+= k[:14].ljust(14)+" | "
                 line+= str(v.get('fw')).rjust(4) + " | "
                 line+= str(v.get('mod_func')).rjust(4) + " | "
                 line+= str(v.get('full_id')).rjust(9)
                 rows.append(line)
 
-        
+        # table_header
+        __rows({'module':{'fw':'ver','mod_func':'mod','full_id':'id'}}, ' ')
         if good: __rows(good, 'Y')
         if bad: __rows(bad, 'N')
         if missing: __rows(missing, '-')
         if extra: __rows(extra, '+')
             
-        combined = top+rows+bot
+        combined = [
+            "=" * 42,
+            f"meter: {hostname}",
+            *rows,
+            "="*42
+        ]
+        if not showId: combined = [l[:30] for l in combined]
         if secrets.dev_mode:
-            # print(json.dumps(top, indent=4))
-            # for l in top: print(l)
-            # for l in rows: print(l)
-            # for l in bot: print(l)
             for l in combined: 
                 bg,fg=None,None
                 if l[0]=='Y': 
@@ -186,14 +106,23 @@ class zebra:
                 print(l, bg=bg,fg=fg)
 
         else:
-            # for l in top: printer.line(l)
-            # for l in rows: printer.line(l)
-            # for l in bot: printer.line(l)
             for l in combined: printer.line(l)
             printer.cut()
 
 
-        
+    def organizedv2(hostname,modules, showId=True):
+        good, bad, extra, missing  = goodbadextramissing(modules)
+
+        rows = []
+        def __rows(d:dict, pre):
+            for k,v in d.items():
+                line=f"{pre}|"
+                
+                line+= k[:14].ljust(14)+" | "
+                line+= str(v.get('fw')).rjust(4) + " | "
+                line+= str(v.get('mod_func')).rjust(4) + " | "
+                line+= str(v.get('full_id')).rjust(9)
+                rows.append(line)
 
     def test(hostname,modules):
         good, bad, extra, missing  = {}, {}, {}, {}
@@ -259,7 +188,7 @@ class MAIN():
                     hostname = meter.get_hostname()
                     meter.close()
                     printer.open()
-                    zebra.organizedv2(hostname,modules)
+                    zebra.organizedv1(hostname,modules)
                     print(f"[{ip}] successfully printed!", fg="#008800")
                     self.devices.add(ip)
 
@@ -330,6 +259,6 @@ if __name__ == "__main__":
     # hostname = meter.get_hostname()
 
     printer.open()
-    zebra.organizedv2(hostname,modules)
+    zebra.organizedv1(hostname,modules)
     printer.close()
     
