@@ -5,5 +5,13 @@
             "Initial release."
         ],
         "date": "2025-10-07"
+    },
+    {
+        "version": "1.0.1",
+        "changes": [
+            "Killable by /suicide",
+            "mod -1 is now ignored"
+        ],
+        "date": "2025-10-08"
     }
 ]

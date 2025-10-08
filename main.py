@@ -66,6 +66,7 @@ class zebra:
             stored = ModuleSettings[k]
             if not stored: extra[k] = v
             elif stored==to_check: good[k] = v
+            elif (stored.get("mod")==-1 and stored.get("version")==to_check.get("version")): good[k] = v
             else: bad[k] =v
         for k in ModuleSettings.get_keys():
             if k not in modules:
@@ -121,7 +122,7 @@ class zebra:
         top.append(f"meter: {hostname}")
         bot = [equals]
 
-        table_header = " |"
+        table_header = ".|"
         table_header+= "module".ljust(14)+" | "
         table_header+= "ver".rjust(4)+" | "
         table_header+= "mod".rjust(4)+" | "
@@ -139,6 +140,7 @@ class zebra:
             stored = ModuleSettings[k]
             if not stored: extra[k] = v
             elif stored==to_check: good[k] = v
+            elif (stored.get("mod")==-1 and stored.get("version")==to_check.get("version")): good[k] = v
             else: bad[k] =v
         for k in ModuleSettings.get_keys():
             if k not in modules:
@@ -225,7 +227,7 @@ class MAIN():
 
     def no_bueno(self,ip):
         self.attempts[ip] = self.attempts.get(ip, 0) + 1
-        if self.attempts[ip] >= 6:
+        if self.attempts[ip] >= 10:
             print(f"[{ip}] gonna stop trying", fg="#ff0000")
             self.devices.add(ip)
 
@@ -317,10 +319,10 @@ if __name__ == "__main__":
     # input("")
 
 
-    meter = 33
+    meter = 11
     # hostname = f"192.168.169.{meter}"
     hostname = "<meterId here>"
-    with open(f"/app/lib/config/{meter}.json") as f:
+    with open(f"/app/lib/config/ie{meter}.json") as f:
         modules = json.load(f)
 
     # meter = SSHMeter("192.168.169.10")

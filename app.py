@@ -17,7 +17,7 @@ from main import MAIN
 #================================================================
 parser = argparse.ArgumentParser()
 parser.add_argument("--host",       default='0.0.0.0')
-parser.add_argument("--port",       default=3001)
+parser.add_argument("--port",       default=8021)
 args = parser.parse_args()
 
 # host = '0.0.0.0'

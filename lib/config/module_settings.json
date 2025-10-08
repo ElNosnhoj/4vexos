@@ -1,11 +1,15 @@
 {
-    "BNA": {
-        "version": 2207,
-        "mod": 2
-    },
     "EMV_CONTACT": {
         "version": 26,
         "mod": -1
+    },
+    "KBD_CONTROLLER": {
+        "version": 2218,
+        "mod": -1
+    },
+    "KIOSK_III": {
+        "version": 146,
+        "mod": 0
     },
     "KIOSK_NFC": {
         "version": 2227,
